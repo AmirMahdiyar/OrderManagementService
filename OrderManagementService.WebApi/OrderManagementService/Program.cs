@@ -1,17 +1,30 @@
+using OrderManagementService.Extensions;
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
+builder
+    .AddSerilogLogging()
+    .AddWebServices();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-
+app.UseExceptionHandler();
+app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
-app.Run();
+try
+{
+    Log.Information("Starting Order Management Service...");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly.");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
