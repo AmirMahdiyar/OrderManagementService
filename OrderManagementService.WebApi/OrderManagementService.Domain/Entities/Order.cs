@@ -14,12 +14,12 @@ namespace OrderManagementService.Domain.Entities
         private List<OrderItem> _items = new();
 
         public DateTime CreatedDate { get; private set; }
-        public OrderState CurrentState => _state;
+        public OrderState State => _state;
 
 
         public Money TotalAmount => Money.Create(_items.Sum(i => (i.Quantity * i.UnitPrice).Value));
 
-        protected Order() { }
+        protected Order() { } //For EF
 
         protected Order(Guid customerId, DateTime createdDate)
         {
@@ -44,7 +44,7 @@ namespace OrderManagementService.Domain.Entities
 
         public void AddOrderItem(Guid productId, Money unitPrice, Quantity quantity)
         {
-            new OrderStatusMustBePendingForModificationValidation(CurrentState).Validate();
+            new OrderStatusMustBePendingForModificationValidation(State).Validate();
             new DuplicateProductNotAllowedValidation(_items, productId).Validate();
 
             var item = OrderItem.Create(Id, productId, unitPrice, quantity);
@@ -55,7 +55,7 @@ namespace OrderManagementService.Domain.Entities
 
         public void RemoveOrderItem(Guid orderItemId)
         {
-            new OrderStatusMustBePendingForModificationValidation(CurrentState).Validate();
+            new OrderStatusMustBePendingForModificationValidation(State).Validate();
             new OrderItemMustExistValidation(_items, orderItemId).Validate();
 
             var itemToRemove = _items.First(i => i.Id == orderItemId);

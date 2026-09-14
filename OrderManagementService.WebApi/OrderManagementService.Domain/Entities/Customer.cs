@@ -8,7 +8,7 @@ namespace OrderManagementService.Domain.Entities
         public string FullName { get; private set; }
         public Guid UserId { get; private set; }
 
-        protected Customer() { }
+        protected Customer() { } //For EF
 
         protected Customer(string fullName, Guid userId)
         {

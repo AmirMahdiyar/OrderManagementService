@@ -10,7 +10,7 @@ namespace OrderManagementService.Domain.Entities
         public string PasswordHash { get; private set; }
         public string Role { get; private set; }
 
-        protected User() { }
+        protected User() { } //For EF
 
         protected User(string username, string plainPassword, string role, IPasswordHasher passwordHasher)
         {

@@ -9,7 +9,7 @@ namespace OrderManagementService.Domain.Entities
         public Money UnitPrice { get; private set; }
         public Quantity Quantity { get; private set; }
 
-        protected OrderItem() { }
+        protected OrderItem() { } //For EF
 
         protected OrderItem(Guid orderId, Guid productId, Money unitPrice, Quantity quantity)
         {

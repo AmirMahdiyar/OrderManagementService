@@ -10,7 +10,7 @@ namespace OrderManagementService.Domain.Entities
         public Quantity Stock { get; private set; }
         public Money Price { get; private set; }
 
-        protected Product() { }
+        protected Product() { } //For EF
 
         protected Product(string name, Quantity stock, Money price)
         {
