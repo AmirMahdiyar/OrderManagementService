@@ -6,6 +6,6 @@ namespace OrderManagementService.Domain.Entities.Rules
     public class QuantityGreaterThanZeroValidation : DomainValidation<int, QuantityMustBeGreaterThanZeroException>
     {
         public QuantityGreaterThanZeroValidation(int value) : base(value) { }
-        protected override bool IsValid() => Value >= 0;
+        protected override bool IsValid() => Value > 0;
     }
 }
