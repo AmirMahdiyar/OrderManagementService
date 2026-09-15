@@ -7,7 +7,12 @@ builder
     .AddSerilogLogging()
     .AddDatabase()
     .AddSingletonDependencies()
+    .AddDomainServices()
+    .AddRepositories()
+    .AddApplicationServices()
+    .AddBackgroundJobs()
     .AddJwtAuthentication()
+    .AddSwaggerDocumentation()
     .AddWebServices();
 
 var app = builder.Build();
@@ -15,6 +20,13 @@ var app = builder.Build();
 app.UseExceptionHandler();
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Order Management Service API v1");
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

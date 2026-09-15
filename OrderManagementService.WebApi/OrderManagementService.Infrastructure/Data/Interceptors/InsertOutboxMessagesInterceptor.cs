@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
 using OrderManagementService.Domain.Entities.Base.Entity;
@@ -45,11 +45,8 @@ namespace OrderManagementService.Infrastructure.Data.Interceptors
                     return domainEvents;
                 })
                 .Select(domainEvent => OutboxMessage.Create(
-                    type: domainEvent.GetType().Name,
-                    content: JsonConvert.SerializeObject(domainEvent, new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    })))
+                    type: domainEvent.GetType().AssemblyQualifiedName ?? domainEvent.GetType().FullName ?? domainEvent.GetType().Name,
+                    content: JsonConvert.SerializeObject(domainEvent, OutboxSerializer.Settings)))
                 .ToList();
 
             context.Set<OutboxMessage>()

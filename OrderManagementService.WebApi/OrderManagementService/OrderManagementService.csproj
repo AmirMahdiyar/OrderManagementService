@@ -22,10 +22,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OrderManagementService.Domain\OrderManagementService.Domain.csproj" />
+    <ProjectReference Include="..\OrderManagementService.Application\OrderManagementService.Application.csproj" />
     <ProjectReference Include="..\OrderManagementService.Infrastructure\OrderManagementService.Infrastructure.csproj" />
   </ItemGroup>
 

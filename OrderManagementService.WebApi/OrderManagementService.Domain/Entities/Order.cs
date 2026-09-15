@@ -1,10 +1,9 @@
-﻿using OrderManagementService.Domain.Entities.Base.Entity;
+using OrderManagementService.Domain.Entities.Base.Entity;
 using OrderManagementService.Domain.Entities.Events;
 using OrderManagementService.Domain.Entities.Rules;
 using OrderManagementService.Domain.Entities.States;
 using OrderManagementService.Domain.Entities.States.Base;
 using OrderManagementService.Domain.Entities.ValueObjects;
-using OrderManagementService.Domain.Services;
 
 namespace OrderManagementService.Domain.Entities
 {
@@ -21,11 +20,11 @@ namespace OrderManagementService.Domain.Entities
 
         protected Order() { } //For EF
 
-        protected Order(Guid customerId, DateTime createdDate)
+        protected Order(Guid customerId)
         {
             Id = InitialId();
             CustomerId = customerId;
-            CreatedDate = createdDate;
+            CreatedDate = DateTime.Now;
             _state = new PendingState();
         }
         public Guid CustomerId { get; private set; }
@@ -33,7 +32,7 @@ namespace OrderManagementService.Domain.Entities
 
 
         public static Order Create(Guid customerId)
-            => new Order(customerId, DateTime.UtcNow);
+            => new Order(customerId);
 
 
         #region Behaviors
@@ -64,12 +63,9 @@ namespace OrderManagementService.Domain.Entities
             AddDomainEvent(new OrderUpdatedEvent(Id));
         }
 
-        public async Task ConfirmAsync(IOrderInventoryChecker inventoryChecker)
+        public void Confirm()
         {
             new OrderMustHaveItemsValidation(_items).Validate();
-
-            bool hasStock = await inventoryChecker.HasSufficientStockAsync(_items);
-            new InventoryMustBeSufficientValidation(hasStock).Validate();
 
             _state.Confirm(this);
 
@@ -86,6 +82,13 @@ namespace OrderManagementService.Domain.Entities
         {
             _state.Deliver(this);
             AddDomainEvent(new OrderDeliveredEvent(Id));
+        }
+
+        public void Delete()
+        {
+            new OrderCanBeDeletedValidation(State).Validate();
+
+            AddDomainEvent(new OrderDeletedEvent(Id, _items.ToList().AsReadOnly(), State.Name));
         }
         #endregion
 

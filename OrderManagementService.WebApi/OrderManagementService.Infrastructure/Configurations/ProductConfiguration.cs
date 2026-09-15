@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OrderManagementService.Domain.Entities;
 using OrderManagementService.Domain.Entities.ValueObjects;
@@ -30,6 +30,9 @@ namespace OrderManagementService.Infrastructure.Configurations
             builder.Property(x => x.Stock)
                 .HasConversion(x => x.Value, v => Quantity.Create(v))
                 .IsRequired();
+
+            builder.Property(x => x.RowVersion)
+                .IsRowVersion();
         }
     }
 }

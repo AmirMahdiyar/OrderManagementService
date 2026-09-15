@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using OrderManagementService.Domain.Entities;
 using OrderManagementService.Infrastructure.Configurations;
 using OrderManagementService.Infrastructure.Outbox;
@@ -12,7 +12,6 @@ namespace OrderManagementService.Infrastructure
         }
 
         public DbSet<Order> Orders => Set<Order>();
-        public DbSet<OrderItem> OrderItems => Set<OrderItem>();
         public DbSet<Product> Products => Set<Product>();
         public DbSet<Customer> Customers => Set<Customer>();
         public DbSet<User> Users => Set<User>();
