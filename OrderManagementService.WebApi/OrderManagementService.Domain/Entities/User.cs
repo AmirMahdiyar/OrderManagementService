@@ -1,4 +1,4 @@
-﻿using OrderManagementService.Domain.Entities.Base.Entity;
+using OrderManagementService.Domain.Entities.Base.Entity;
 using OrderManagementService.Domain.Entities.Rules;
 using OrderManagementService.Domain.Services;
 

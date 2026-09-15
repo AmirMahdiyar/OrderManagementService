@@ -1,4 +1,4 @@
-﻿using OrderManagementService.Domain.Entities.Rules;
+using OrderManagementService.Domain.Entities.Rules;
 
 namespace OrderManagementService.Domain.Entities.ValueObjects
 {

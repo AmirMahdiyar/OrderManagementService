@@ -1,4 +1,4 @@
-﻿using OrderManagementService.Domain.Entities.Base.Entity;
+using OrderManagementService.Domain.Entities.Base.Entity;
 using OrderManagementService.Domain.Entities.Rules;
 using OrderManagementService.Domain.Entities.ValueObjects;
 
@@ -9,6 +9,7 @@ namespace OrderManagementService.Domain.Entities
         public string Name { get; private set; }
         public Quantity Stock { get; private set; }
         public Money Price { get; private set; }
+        public byte[] RowVersion { get; private set; }
 
         protected Product() { } //For EF
 
@@ -29,6 +30,11 @@ namespace OrderManagementService.Domain.Entities
         {
             new StockMustBeSufficientValidation(Stock, amount).Validate();
             Stock = Quantity.Create(Stock.Value - amount.Value);
+        }
+
+        public void IncreaseStock(Quantity amount)
+        {
+            Stock = Quantity.Create(Stock.Value + amount.Value);
         }
 
         protected override Guid InitialId()

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using OrderManagementService.Application.Contracts;
+using OrderManagementService.Application.Contracts.Jwt;
 using OrderManagementService.Domain.Entities;
 using OrderManagementService.Infrastructure.Security.Options;
 using System.IdentityModel.Tokens.Jwt;
@@ -35,7 +35,7 @@ namespace OrderManagementService.Infrastructure.Security
                 issuer: _options.Issuer,
                 audience: _options.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(_options.ExpirationHours),
+                expires: DateTime.Now.AddHours(_options.ExpirationHours),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

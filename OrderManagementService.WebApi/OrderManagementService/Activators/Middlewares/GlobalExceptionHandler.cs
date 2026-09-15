@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OrderManagementService.Application.Exceptions;
 using OrderManagementService.Domain.Exceptions.DomainExceptions.Base;
 using OrderManagementService.Domain.Exceptions.PresentationExceptions.Base;
 using static OrderManagementService.Activators.Middlewares.Constants.GlobalExceptionHandlerConstants;
@@ -25,26 +27,42 @@ namespace OrderManagementService.Activators.Middlewares
             {
                 Instance = httpContext.Request.Path
             };
-
-            if (exception is DomainException domainException)
-                FillHttpContext(httpContext, problemDetails, domainException);
-
-            else if (exception is ApplicationException applicationException)
-                FillHttpContext(httpContext, problemDetails, applicationException);
-
-            else if (exception is PresentationException presentationException)
-                FillHttpContext(httpContext, problemDetails, presentationException);
-
-            else
-                FillHttpContext(httpContext, problemDetails);
-
+            switch (exception)
+            {
+                case InputValidationFailedApplicationException validationException:
+                    FillHttpContext(httpContext, problemDetails, validationException);
+                    break;
+                case DomainException domainException:
+                    FillHttpContext(httpContext, problemDetails, domainException);
+                    break;
+                case ApplicationException applicationException:
+                    FillHttpContext(httpContext, problemDetails, applicationException);
+                    break;
+                case PresentationException presentationException:
+                    FillHttpContext(httpContext, problemDetails, presentationException);
+                    break;
+                case DbUpdateConcurrencyException concurrencyException:
+                    FillConcurrencyHttpContext(httpContext, problemDetails, concurrencyException);
+                    break;
+                default:
+                    FillHttpContext(httpContext, problemDetails);
+                    break;
+            }
             await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 
             return true;
         }
 
 
+
         #region Private Methods
+        private static void FillHttpContext(HttpContext httpContext, ProblemDetails problemDetails, InputValidationFailedApplicationException validationException)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            problemDetails.Title = HandledValidationExceptionMessageTitle;
+            problemDetails.Status = StatusCodes.Status400BadRequest;
+            problemDetails.Detail = validationException.Message;
+        }
         private static void FillHttpContext(HttpContext httpContext, ProblemDetails problemDetails)
         {
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
@@ -75,6 +93,14 @@ namespace OrderManagementService.Activators.Middlewares
             problemDetails.Title = HandledDomainExceptionMessageTitle;
             problemDetails.Status = StatusCodes.Status400BadRequest;
             problemDetails.Detail = domainException.Message;
+        }
+
+        private static void FillConcurrencyHttpContext(HttpContext httpContext, ProblemDetails problemDetails, DbUpdateConcurrencyException concurrencyException)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
+            problemDetails.Title = HandledConcurrencyExceptionMessageTitle;
+            problemDetails.Status = StatusCodes.Status409Conflict;
+            problemDetails.Detail = ConcurrencyConflictErrorMessage;
         }
         #endregion
     }

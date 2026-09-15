@@ -1,4 +1,4 @@
-﻿using OrderManagementService.Domain.Entities.Base.BusinessValidation;
+using OrderManagementService.Domain.Entities.Base.BusinessValidation;
 using OrderManagementService.Domain.Entities.Rules.Exceptions;
 
 namespace OrderManagementService.Domain.Entities.Rules
@@ -12,6 +12,6 @@ namespace OrderManagementService.Domain.Entities.Rules
             _productId = productId;
         }
 
-        protected override bool IsValid() => Value.Any(i => i.ProductId == _productId);
+        protected override bool IsValid() => !Value.Any(i => i.ProductId == _productId);
     }
 }

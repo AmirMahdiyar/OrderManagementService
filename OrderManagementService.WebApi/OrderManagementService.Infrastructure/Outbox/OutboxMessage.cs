@@ -1,4 +1,4 @@
-﻿using OrderManagementService.Infrastructure.Outbox.Exceptions;
+using OrderManagementService.Infrastructure.Outbox.Exceptions;
 
 namespace OrderManagementService.Infrastructure.Outbox
 {
@@ -30,6 +30,7 @@ namespace OrderManagementService.Infrastructure.Outbox
         public void MarkAsProcessed()
         {
             ProcessedOn = DateTime.Now;
+            Error = null;
         }
 
         public void MarkAsFailed(string error)
